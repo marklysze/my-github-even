@@ -232,7 +232,7 @@ export async function fetchAllComments(
       id: r.id as number,
       author: (r.user as { login?: string } | undefined)?.login ?? 'unknown',
       createdAt: (r.submitted_at as string | undefined) ?? (r.created_at as string),
-      body: ((r.body as string | null) ?? '').trim(),
+      body: sanitizeBody((r.body as string | null) ?? ''),
       kind: 'review',
       indent: 0,
       state: r.state as string | undefined,
@@ -244,7 +244,7 @@ export async function fetchAllComments(
     id: c.id as number,
     author: (c.user as { login?: string } | undefined)?.login ?? 'unknown',
     createdAt: c.created_at as string,
-    body: ((c.body as string | undefined) ?? '').trim(),
+    body: sanitizeBody((c.body as string | undefined) ?? ''),
     kind: 'line',
     indent: 0,
     path: c.path as string | undefined,
@@ -262,7 +262,7 @@ export async function fetchAllComments(
         id: issue.id as number,
         author: (issue.user as { login?: string } | undefined)?.login ?? 'unknown',
         createdAt: issue.created_at as string,
-        body: ((issue.body as string | undefined) ?? '').trim(),
+        body: sanitizeBody((issue.body as string | undefined) ?? ''),
         kind: 'issue',
         indent: 0,
       },
@@ -412,6 +412,22 @@ export function formatThreadDetail(item: ThreadItem, now: number = Date.now()): 
 // G2 list items are hard-capped by firmware. Docs say "64 characters" but
 // the real limit appears to be measured in UTF-8 bytes — multibyte glyphs
 // (·, …, ←, CJK, emoji) eat into the budget. Stay safely under 64 bytes.
+// Strips display-hostile constructs from GitHub comment bodies before they
+// hit the glasses. Bots (Vercel, Codecov, …) routinely embed images, HTML
+// chrome, and link-reference blobs that render as character soup on a
+// 576×288 mono display. We don't run a full markdown parser — these regexes
+// catch the high-signal cases observed in the wild.
+export function sanitizeBody(s: string): string {
+  return s
+    .replace(/^\s*\[[^\]]+\]:\s+\S.*$/gm, '')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, (_, alt) => alt.trim() || '[image]')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/<(img|br|hr|source)\b[^>]*\/?>/gi, '')
+    .replace(/<\/?[a-z][^>]*>/gi, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
 export const LIST_ITEM_MAX_BYTES = 60
 
 const utf8 = new TextEncoder()

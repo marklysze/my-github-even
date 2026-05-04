@@ -4,6 +4,27 @@ A GitHub PR / Notifications viewer for Even Realities G2 smart glasses. Authored
 
 The phone-side companion screen carries Settings: connect via GitHub OAuth Device Flow, or paste a Personal Access Token.
 
+## What it does
+
+**My GitHub is read-only.** It views your GitHub data on the glasses; it never writes anything back to GitHub.
+
+Browse:
+
+- **My PRs** — pull requests you've authored (open + draft), with comment counts and live status (open / draft / merged / closed)
+- **Review requests** — pull requests where you've been asked to review
+- **Notifications** — your unread notification inbox, prefixed with PR-status glyphs and a short reason indicator (`AU` author, `MN` mention, …)
+- **Comment threads** — drill into any PR to read the full conversation: issue comments, review summaries, and inline line comments, in chronological order
+- **Comment / body detail** — paginated text view of a single comment or a PR/issue description
+
+It does **not**:
+
+- Post comments, replies, or reactions
+- Approve, request changes, dismiss reviews, merge, close, or reopen PRs
+- Mark notifications as read
+- Modify any repository, issue, or user setting
+
+The OAuth token (or your PAT) is the only thing the app stores, and it stays on-device in the host's secure storage. No telemetry, no external services other than GitHub itself and the CORS proxy described below.
+
 ## Screenshots
 
 | | |
