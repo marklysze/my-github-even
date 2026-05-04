@@ -414,9 +414,9 @@ async function renderNoToken() {
         containerID: 1,
         containerName: 'no-token',
         content:
-          'Needs a GitHub token.\n\n' +
-          'Open the Even Hub app on your phone and paste a Personal Access Token in Settings.\n\n' +
-          'Double-tap to exit.',
+          'My GitHub requires access to read from your GitHub account.\n\n' +
+          'Open the Even Hub app settings on your phone and connect to GitHub or paste a Personal Access Token.\n\n' +
+          'This page will auto-refresh when access is authorized.',
         isEventCapture: 1,
       }),
     ],
