@@ -8,7 +8,8 @@
     "build-logo": "node scripts/build-logo.mjs",
     "build": "npm run build-logo && tsc --noEmit && vite build",
     "preview": "vite preview",
-    "pack": "evenhub pack",
+    "pack": "evenhub pack app.json dist -o my-github.ehpk",
+    "pack:check": "evenhub pack app.json dist -o my-github.ehpk -c",
     "simulate": "evenhub-simulator http://localhost:5173",
     "test": "vitest run",
     "test:watch": "vitest"
